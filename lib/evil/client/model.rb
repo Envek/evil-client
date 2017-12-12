@@ -104,8 +104,6 @@ class Evil::Client
       def new(op = {})
         op = Hash(op).each_with_object({}) { |(k, v), obj| obj[k.to_sym] = v }
         super(op).tap { |item| in_english { policy[item].validate! } }
-      rescue StandardError => error
-        raise ValidationError, error.message
       end
       alias call new
       alias []   call
@@ -113,11 +111,7 @@ class Evil::Client
       private
 
       def in_english(&block)
-        available_locales = I18n.available_locales
-        I18n.available_locales = %i[en]
         I18n.with_locale(:en, &block)
-      ensure
-        I18n.available_locales = available_locales
       end
     end
   end
